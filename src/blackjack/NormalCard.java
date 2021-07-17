@@ -1,25 +1,27 @@
 package blackjack;
 
 public class NormalCard implements Card {
-	private boolean hidden;
+	private boolean faceUp = true;
+	private int value = 0;
 	
-	NormalCard() {
-		
+	NormalCard(int value, boolean faceUp) {
+		this.faceUp = faceUp;
+		this.value = value;
 	}
 
 	@Override
 	public boolean getFaceUp() {
-		return false;
+		return faceUp;
 	}
 
 	@Override
-	public void setFaceUp(boolean hidden) {
-		this.hidden = hidden;
+	public void setFaceUp() {
+		faceUp = true;
 	}
 
 	@Override
 	public int value() {
-		return 0;
+		return value;
 	}
 
 }

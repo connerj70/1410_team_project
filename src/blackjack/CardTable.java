@@ -19,6 +19,10 @@ public class CardTable extends JPanel {
 	private int dealerScore = 0;
 	private int playerScore = 0;
 	private Deck deck;
+	public int dealerOffset = 0;
+	public int playerOffset = 0;
+
+
 	
 	CardTable(Collection<Card> dealerCards, Collection<Card> playerCards, Deck deck) {
 		this.dealerCards = dealerCards;
@@ -27,28 +31,38 @@ public class CardTable extends JPanel {
 	}
 	
 	/*
-	 * Paint the components onto the screen including the roof, windows, door, and background.
+	 * Paint the cards onto the card table
 	 * 
 	 * @param g the graphics
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		dealerOffset = 0;
+		playerOffset = 0;
 		dealerCards.forEach(c-> {
-			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/2c.jpeg"));
+			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
 			Image image = card.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			card = new ImageIcon(newimg);  // transform it back
-			card.paintIcon(null, g, 210, 100);
+			card.paintIcon(null, g, 250 + dealerOffset, 200);
+			dealerOffset += 130;
 		});
 		
 		playerCards.forEach(c -> {
-			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/2c.jpeg"));
+			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
 			Image image = card.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			card = new ImageIcon(newimg);  // transform it back
-			card.paintIcon(null, g, 100, 100);
+			card.paintIcon(null, g, 250 + playerOffset, 400);
+			playerOffset += 130;
 		});
 		
+		// Draw the deck
+		ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/back.jpeg"));
+		Image image = card.getImage(); // transform it 
+		Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		card = new ImageIcon(newimg);  // transform it back
+		card.paintIcon(null, g, 100, 300);
 	}
 	
 	/*
@@ -57,7 +71,8 @@ public class CardTable extends JPanel {
 	 * @param card the card that will be added to the dealers hand.
 	 */
 	public void addToDealerCards(Card card) {
-		
+		this.dealerCards.add(card);
+		repaint();
 	}
 	
 	/*
@@ -66,7 +81,8 @@ public class CardTable extends JPanel {
 	 * @param card the card that will be added to the players hand.
 	 */
 	public void addToPlayerCards(Card card) {
-		
+		this.playerCards.add(card);
+		repaint();
 	}
 	
 	/*
@@ -87,7 +103,28 @@ public class CardTable extends JPanel {
 		return new ArrayList<Card>();
 	}
 	
+	public int getDealerScore() {
+		return calculateScore(dealerCards);
+	}
+	
+	public int getPlayerScore() {
+		return calculateScore(playerCards);
+	}
+	
+	public boolean anyDealerCardsFaceDown() {
+		for (Card c: dealerCards) {
+			if(c.getFaceUp() == false) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private int calculateScore(Collection<Card> cards) {
-		return 0;
+		int sum = 0;
+		for(Card c: cards) {
+			sum += c.value();
+		}
+		return sum;
 	}
 }
