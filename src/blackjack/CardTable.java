@@ -33,11 +33,22 @@ public class CardTable extends JPanel {
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/2c.jpeg"));
-		Image image = card.getImage(); // transform it 
-		Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-		card = new ImageIcon(newimg);  // transform it back
-		card.paintIcon(null, g, 150, 150);
+		dealerCards.forEach(c-> {
+			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/2c.jpeg"));
+			Image image = card.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			card = new ImageIcon(newimg);  // transform it back
+			card.paintIcon(null, g, 210, 100);
+		});
+		
+		playerCards.forEach(c -> {
+			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/2c.jpeg"));
+			Image image = card.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			card = new ImageIcon(newimg);  // transform it back
+			card.paintIcon(null, g, 100, 100);
+		});
+		
 	}
 	
 	/*

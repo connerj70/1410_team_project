@@ -41,7 +41,12 @@ public class BlackJackApp extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(1, 0, 0, 0));
 		
-		CardTable cardTable = new CardTable(new ArrayList<Card>(), new ArrayList<Card>(), new Deck());
+		ArrayList<Card> dealerCards = new ArrayList<Card>();
+		dealerCards.add(new NormalCard());
+		ArrayList<Card> playerCards = new ArrayList<Card>();
+		playerCards.add(new NormalCard());
+		
+		CardTable cardTable = new CardTable(dealerCards, playerCards, new Deck());
 		cardTable.setBackground(new Color(7,99,36));
 		contentPane.add(cardTable);
 	}
