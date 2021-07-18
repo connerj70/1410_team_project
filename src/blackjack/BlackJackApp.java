@@ -16,6 +16,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 
+/*
+ * Author Conner Jensen, Silas Knox, Taylor Shipley
+ */
 public class BlackJackApp extends JFrame {
 
 	private JPanel contentPane;
@@ -35,6 +38,7 @@ public class BlackJackApp extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 			}
 		});
 	}
@@ -75,17 +79,38 @@ public class BlackJackApp extends JFrame {
 		playerScoreLabel.setBorder(new EmptyBorder(550,500,0,0));
 		cardTable.add(playerScoreLabel);
 		
+		Player player = new Player("Bob");
+		Dealer dealer = new Dealer();
+		Deck deck = new Deck();
+		
 		JButton hitBtn = new JButton("Hit");
 		cardTable.add(hitBtn);
 		hitBtn.addActionListener(new ActionListener() {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        System.out.println("you chose to hit.");
+		    	// TODO: Disable this button until the end of this function?
+		    	
+//		        int card = player.hit();
+		        // Add the returned int to the players current score, then check if they have busted or not.
 				playerCards.add(new NormalCard(2, true));
 				playerScoreLabel.setText("Player Score: " + cardTable.getPlayerScore());
 				revalidate();
 				repaint();
+				
+				// TODO: Check here if the player busted.
+				
+				// Dealers turn.
+				// Check if the dealer should draw another card.
+//				if (cardTable.getDealerScore() < 16) {
+//					// TODO: Change this to work with the dealer cards array.
+//					dealer.takeCard(dealer.dCards, dealer.deck, cardTable.getDealerScore());
+//				}
+				
+				// TODO: Check here if the dealer busted.
+				
+				// TODO: Enable this button.
+				
 		    }
 		});
 		
@@ -95,7 +120,8 @@ public class BlackJackApp extends JFrame {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        System.out.println("you chose to stand.");
+		    	System.out.println("You chose to stand.");
+//		        dealer.dealersTurn(dealer.dCards, dealer.deck);
 		    }
 		});
 	}
