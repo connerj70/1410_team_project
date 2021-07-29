@@ -22,6 +22,14 @@ import javax.swing.JLabel;
 public class BlackJackApp extends JFrame {
 
 	private JPanel contentPane;
+	private Deck deck = new Deck();
+	private ArrayList<Card> dealerCards = new ArrayList<Card>();
+	private ArrayList<Card> playerCards = new ArrayList<Card>();
+	private CardTable cardTable = new CardTable(dealerCards, playerCards, new Deck());
+	private JLabel dealerScoreLabel;
+	private JLabel playerScoreLabel;
+
+
 
 	/**
 	 * Launch the application.
@@ -54,17 +62,14 @@ public class BlackJackApp extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(1, 0, 0, 0));
 		
-		ArrayList<Card> dealerCards = new ArrayList<Card>();
-		dealerCards.add(new NormalCard(2, false));
-		dealerCards.add(new NormalCard(2, true));
-		dealerCards.add(new NormalCard(2, true));
+		
+		dealerCards.add(new NormalCard(Deck.takeCard(deck.deck), false));
+		dealerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
 
-		ArrayList<Card> playerCards = new ArrayList<Card>();
-		playerCards.add(new NormalCard(2, true));
-		playerCards.add(new NormalCard(2, true));
+		playerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
+		playerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
 
 		
-		CardTable cardTable = new CardTable(dealerCards, playerCards, new Deck());
 		cardTable.setBackground(new Color(7,99,36));
 		contentPane.add(cardTable);
 		
@@ -81,7 +86,6 @@ public class BlackJackApp extends JFrame {
 		
 		Player player = new Player("Bob");
 		Dealer dealer = new Dealer();
-		Deck deck = new Deck();
 		
 		JButton hitBtn = new JButton("Hit");
 		cardTable.add(hitBtn);
@@ -89,39 +93,133 @@ public class BlackJackApp extends JFrame {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		    	// TODO: Disable this button until the end of this function?
-		    	
-//		        int card = player.hit();
+		    	hitBtn.setEnabled(false);
 		        // Add the returned int to the players current score, then check if they have busted or not.
-				playerCards.add(new NormalCard(2, true));
+		    	int card = Deck.takeCard(deck.deck);
+				playerCards.add(new NormalCard(card, true));
 				playerScoreLabel.setText("Player Score: " + cardTable.getPlayerScore());
 				revalidate();
 				repaint();
 				
-				// TODO: Check here if the player busted.
+				// TODO: Change this out for the method in player?
+				int cardTotal = cardTable.getPlayerScore();
+				if (cardTotal == 21)
+				{
+					System.out.println("The player got a blackjack");
+				}
+				else if (cardTotal > 21)
+				{
+					System.out.println("The player busted");
+					JPanel panel = new JPanel();
+					cardTable.add(panel);
+					
+					JLabel bustedLabel = new JLabel("Oh no you busted!");
+					
+					panel.add(bustedLabel);
+					JButton playAgainBtn = new JButton("Play again?");
+					playAgainBtn.addActionListener(new ActionListener() {
+
+					    @Override
+					    public void actionPerformed(ActionEvent e) {
+					    	System.out.println("Reset the game.");
+					    	deck = new Deck();
+					    	dealerCards = new ArrayList<Card>();
+					    	playerCards = new ArrayList<Card>();
+					    	dealerCards.add(new NormalCard(Deck.takeCard(deck.deck), false));
+							dealerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
+							playerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
+							playerCards.add(new NormalCard(Deck.takeCard(deck.deck), true));
+							cardTable.setPlayerCards(playerCards);
+							cardTable.setDealerCards(dealerCards);
+							cardTable.setDeck(deck);
+							dealerScoreLabel.setText("Dealer Score: " + cardTable.getDealerScore() + (cardTable.anyDealerCardsFaceDown() ? " (?)" : ""));
+							playerScoreLabel.setText("Player Score: " + cardTable.getPlayerScore());
+							cardTable.remove(panel);
+					    	revalidate();
+							repaint();
+					    }
+					});
+					panel.add(playAgainBtn);
+					JButton quitBtn = new JButton("Quit.");
+					quitBtn.addActionListener(new ActionListener() {
+
+					    @Override
+					    public void actionPerformed(ActionEvent e) {
+					    	player.quitGame();
+					    }
+					});
+					panel.add(quitBtn);
+				}
 				
 				// Dealers turn.
+				// Reveal their facedown card.
+				dealerCards.get(0).setFaceUp();
+				revalidate();
+				repaint();
 				// Check if the dealer should draw another card.
-//				if (cardTable.getDealerScore() < 16) {
-//					// TODO: Change this to work with the dealer cards array.
-//					dealer.takeCard(dealer.dCards, dealer.deck, cardTable.getDealerScore());
-//				}
+				if (cardTable.getDealerScore() < 16) {
+					// TODO: Change this to work with the dealer cards array.
+					int dCard = Deck.takeCard(deck.deck);
+					dealerCards.add(new NormalCard(dCard, true));
+					dealerScoreLabel.setText("Dealer Score: " + cardTable.getDealerScore());
+					revalidate();
+					repaint();
+				}
 				
-				// TODO: Check here if the dealer busted.
+				int dealerCardTotal = cardTable.getDealerScore();
+				if(dealerCardTotal > 21) {
+					System.out.println("The dealer busted!");
+				} else if(dealerCardTotal > 17) {
+					System.out.println("The dealer is over a score of 17 and should not draw again.");
+				}
 				
-				// TODO: Enable this button.
+				hitBtn.setEnabled(true);
 				
 		    }
 		});
 		
 		JButton standBtn = new JButton("Stand");
 		cardTable.add(standBtn);
+	
 		standBtn.addActionListener(new ActionListener() {
 
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
+		    	standBtn.setEnabled(false);
 		    	System.out.println("You chose to stand.");
 //		        dealer.dealersTurn(dealer.dCards, dealer.deck);
+		    	// Dealers turn.
+				// Reveal their facedown card.
+				dealerCards.get(0).setFaceUp();
+				revalidate();
+				repaint();
+				while(cardTable.getDealerScore() < 17) {
+					// TODO: Change this to work with the dealer cards array.
+					int dCard = Deck.takeCard(deck.deck);
+					dealerCards.add(new NormalCard(dCard, true));
+					dealerScoreLabel.setText("Dealer Score: " + cardTable.getDealerScore());
+					revalidate();
+					repaint();
+				}
+				
+				
+				// Check score and determine winner
+				int dealerCardTotal = cardTable.getDealerScore();
+				if(dealerCardTotal > 21) {
+					System.out.println("The dealer busted!");
+				} else if(dealerCardTotal > 17) {
+					System.out.println("The dealer is over a score of 17 and should not draw again.");
+				}
+				
+				if(dealerCardTotal <= 21 && dealerCardTotal > cardTable.getPlayerScore()) {
+					System.out.println("The dealer won.");
+				} else if(dealerCardTotal <= 21 && dealerCardTotal < cardTable.getPlayerScore() && cardTable.getPlayerScore() <= 21) {
+					System.out.println("The player won!");
+				} else if(dealerCardTotal > 21 && cardTable.getPlayerScore() <= 21) {
+					System.out.println("The player won a different way!");
+				}
+				
+		    	standBtn.setEnabled(true);
 		    }
 		});
 	}

@@ -1,47 +1,67 @@
 package blackjack;
 
+import java.util.List;
+
 /*
  * Author Taylor Shipley
  */
-public class Player {
+public class Player 
+{
 	String name;
-
-	int totalCash;
-
 	int cardTotal = 0;
-
-	boolean bust;
-
-	boolean blackjack;
-
-	boolean stay;
-	
-	Deck deck;
+	boolean bust = false;
+	boolean blackjack = false;
+	boolean stay = false;
+	public List<Integer> pCards;
+	Deck deck = new Deck();
 
 	public Player(String name)
-
 	{
 
-	this.name = name;
+		this.name = name;
 
 	}
 
-	public int hit()
-
+	public void hit() 
 	{
+		int returnedCard = Deck.takeCard(deck.deck);
+		if(returnedCard == 11) 
+		{
+			if (cardTotal < 11)
+			{
+				returnedCard = 11;
+			}
+			else
+			{
+				returnedCard = 1;
+			}
+		}
+		pCards.add(returnedCard);
+		cardTotal += returnedCard;
+		checkCardTotal();
+	}
+	
+	public void Stay()
+	{
+		stay = true;
+	}
 
-	int card = Deck.takeCard(deck.deck);
-	cardTotal += card;
-	return card;
-
+	private void checkCardTotal() 
+	{
+		if (cardTotal == 21)
+		{
+			blackjack = true;
+			stay = true;
+		}
+		else if (cardTotal > 21)
+		{
+			bust = true;
+		}
 	}
 
 	public void quitGame()
-
 	{
-
-	System.out.println("Total winnings: $" + totalCash + "Thanks for Playing.");
-
-	System.exit(0);
+		System.out.println("Thanks for Playing.");
+		System.exit(0);
 	}
 }

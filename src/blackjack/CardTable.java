@@ -40,7 +40,15 @@ public class CardTable extends JPanel {
 		dealerOffset = 0;
 		playerOffset = 0;
 		dealerCards.forEach(c-> {
-			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
+			ImageIcon card;
+			int value = c.value();
+			if(!c.getFaceUp()) {
+				card = new ImageIcon(CardTable.class.getResource("/blackjack/back.jpeg"));
+			} else if (value == 1) {
+				card = new ImageIcon(CardTable.class.getResource("/blackjack/acec.jpeg"));
+			} else {				
+				card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
+			}
 			Image image = card.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			card = new ImageIcon(newimg);  // transform it back
@@ -49,7 +57,14 @@ public class CardTable extends JPanel {
 		});
 		
 		playerCards.forEach(c -> {
-			ImageIcon card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
+			System.out.println(c.value());
+			ImageIcon card;
+			int value = c.value();
+			if (value == 1) {
+				card = new ImageIcon(CardTable.class.getResource("/blackjack/acec.jpeg"));
+			} else {				
+				card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
+			}
 			Image image = card.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			card = new ImageIcon(newimg);  // transform it back
@@ -82,6 +97,21 @@ public class CardTable extends JPanel {
 	 */
 	public void addToPlayerCards(Card card) {
 		this.playerCards.add(card);
+		repaint();
+	}
+	
+	public void setPlayerCards(Collection<Card> cards) {
+		this.playerCards = cards;
+		repaint();
+	}
+	
+	public void setDealerCards(Collection<Card> cards) {
+		this.dealerCards = cards;
+		repaint();
+	}
+	
+	public void setDeck(Deck deck) {
+		this.deck = deck;
 		repaint();
 	}
 	
@@ -123,7 +153,9 @@ public class CardTable extends JPanel {
 	private int calculateScore(Collection<Card> cards) {
 		int sum = 0;
 		for(Card c: cards) {
-			sum += c.value();
+			if (c.getFaceUp()) {				
+				sum += c.value();
+			}
 		}
 		return sum;
 	}
