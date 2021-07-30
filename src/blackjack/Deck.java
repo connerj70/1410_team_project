@@ -7,7 +7,7 @@ import java.util.*;
  * @Author Silas Knox
  */
 public class Deck {
-	public List<Integer> deck = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+	public List<Integer> deck = Arrays.asList(12,2,3,4,5,6,7,8,9,10);
 	/**
 	 * Constructor with no fields 
 	 */

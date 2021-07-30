@@ -25,7 +25,7 @@ public class Player
 	public void hit() 
 	{
 		int returnedCard = Deck.takeCard(deck.deck);
-		if(returnedCard == 11) 
+		if(returnedCard == 12) 
 		{
 			if (cardTotal < 11)
 			{

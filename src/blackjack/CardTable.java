@@ -44,7 +44,7 @@ public class CardTable extends JPanel {
 			int value = c.value();
 			if(!c.getFaceUp()) {
 				card = new ImageIcon(CardTable.class.getResource("/blackjack/back.jpeg"));
-			} else if (value == 1) {
+			} else if (value == 12) {
 				card = new ImageIcon(CardTable.class.getResource("/blackjack/acec.jpeg"));
 			} else {				
 				card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
@@ -60,7 +60,7 @@ public class CardTable extends JPanel {
 			System.out.println(c.value());
 			ImageIcon card;
 			int value = c.value();
-			if (value == 1) {
+			if (value == 12) {
 				card = new ImageIcon(CardTable.class.getResource("/blackjack/acec.jpeg"));
 			} else {				
 				card = new ImageIcon(CardTable.class.getResource("/blackjack/" + c.value() + "c.jpeg"));
